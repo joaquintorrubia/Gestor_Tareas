@@ -4,17 +4,26 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -25,23 +34,57 @@ import com.joaquin.gestor_tareas_pmm.model.Prioridad
 import com.joaquin.gestor_tareas_pmm.model.Tarea
 import com.joaquin.gestor_tareas_pmm.ui.theme.Gestor_Tareas_PMMTheme
 
+
 @Composable
-fun TarjetaTarea(tarea: Tarea, modifier: Modifier = Modifier) {
+fun TarjetaTarea(
+    tarea: Tarea,
+    onCompletadaChange: () -> Unit,
+    onEditar: () -> Unit,
+    onEliminar: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     Card(modifier = modifier.fillMaxWidth()) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = tarea.titulo, style = MaterialTheme.typography.titleMedium)
-            Text(text = "Prioridad: ${tarea.prioridad.etiqueta}")
-            Text(text = if (tarea.completada) "Completada" else "Pendiente")
+        Row(
+            modifier = Modifier.padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Checkbox(
+                checked = tarea.completada,
+                onCheckedChange = { onCompletadaChange() }
+            )
+            Column(modifier = Modifier.weight(1f)) {
+                Text(text = tarea.titulo, style = MaterialTheme.typography.titleMedium)
+                Text(text = "Prioridad: ${tarea.prioridad.etiqueta}")
+                Text(text = if (tarea.completada) "Completada" else "Pendiente")
+            }
+            IconButton(onClick = onEditar) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_editar),
+                    contentDescription = "Editar tarea"
+                )
+            }
+            IconButton(onClick = onEliminar) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_eliminar),
+                    contentDescription = "Eliminar tarea"
+                )
+            }
         }
     }
 }
+
 
 @Composable
 fun ListaTareasScreen(
     tareas: List<Tarea>,
     onAnadirClick: () -> Unit,
+    onCompletadaChange: (Tarea) -> Unit,
+    onEditar: (Tarea) -> Unit,
+    onEliminar: (Tarea) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    var tareaAEliminar by remember { mutableStateOf<Tarea?>(null) }
+
     Box(modifier = modifier.fillMaxSize()) {
 
         if (tareas.isEmpty()) {
@@ -57,7 +100,13 @@ fun ListaTareasScreen(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 items(tareas, key = { it.id }) {
-                    TarjetaTarea(tarea = it)
+                    val tarea = it
+                    TarjetaTarea(
+                        tarea = tarea,
+                        onCompletadaChange = { onCompletadaChange(tarea) },
+                        onEditar = { onEditar(tarea) },
+                        onEliminar = { tareaAEliminar = tarea }
+                    )
                 }
             }
         }
@@ -73,6 +122,36 @@ fun ListaTareasScreen(
                 contentDescription = "Añadir tarea"
             )
         }
+        val tarea = tareaAEliminar
+        if (tarea != null) {
+            AlertDialog(
+                onDismissRequest = { tareaAEliminar = null },
+                title = { Text("Eliminar tarea") },
+                text = { Text("¿Seguro que quieres eliminar \"${tarea.titulo}\"?") },
+                confirmButton = {
+                    TextButton(onClick = {
+                        onEliminar(tarea)
+                        tareaAEliminar = null
+                    }) { Text("Eliminar") }
+                },
+                dismissButton = {
+                    TextButton(onClick = { tareaAEliminar = null }) { Text("Cancelar") }
+                }
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun TarjetaTareaPreview() {
+    Gestor_Tareas_PMMTheme {
+        TarjetaTarea(
+            tarea = Tarea(id = 1, titulo = "Estudiar para el examen", prioridad = Prioridad.ALTA),
+            onCompletadaChange = {},
+            onEditar = {},
+            onEliminar = {}
+        )
     }
 }
 
@@ -86,7 +165,10 @@ fun ListaTareasConDatosPreview() {
                 Tarea(id = 2, titulo = "Preparar la reunión", prioridad = Prioridad.MEDIA),
                 Tarea(id = 3, titulo = "Entregar la memoria", prioridad = Prioridad.BAJA, completada = true)
             ),
-            onAnadirClick = {}
+            onAnadirClick = {},
+            onCompletadaChange = {},
+            onEditar = {},
+            onEliminar = {}
         )
     }
 }
@@ -95,6 +177,12 @@ fun ListaTareasConDatosPreview() {
 @Composable
 fun ListaTareasVaciaPreview() {
     Gestor_Tareas_PMMTheme {
-        ListaTareasScreen(tareas = emptyList(), onAnadirClick = {})
+        ListaTareasScreen(
+            tareas = emptyList(),
+            onAnadirClick = {},
+            onCompletadaChange = {},
+            onEditar = {},
+            onEliminar = {}
+        )
     }
 }

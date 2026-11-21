@@ -47,10 +47,11 @@ fun FormularioTareaScreen(
     onCancelar: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var titulo by rememberSaveable { mutableStateOf(tareaInicial?.titulo ?: "") }
-    var descripcion by rememberSaveable { mutableStateOf(tareaInicial?.descripcion ?: "") }
-    var prioridad by rememberSaveable { mutableStateOf(tareaInicial?.prioridad ?: Prioridad.MEDIA) }
-    var errorTitulo by rememberSaveable { mutableStateOf<String?>(null) }
+
+    var titulo by rememberSaveable(tareaInicial?.id) { mutableStateOf(tareaInicial?.titulo ?: "") }
+    var descripcion by rememberSaveable(tareaInicial?.id) { mutableStateOf(tareaInicial?.descripcion ?: "") }
+    var prioridad by rememberSaveable(tareaInicial?.id) { mutableStateOf(tareaInicial?.prioridad ?: Prioridad.MEDIA) }
+    var errorTitulo by rememberSaveable(tareaInicial?.id) { mutableStateOf<String?>(null) }
 
     var menuAbierto by remember { mutableStateOf(false) }
     var guardando by remember { mutableStateOf(false) }

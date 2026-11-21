@@ -30,8 +30,7 @@ class MainActivity : ComponentActivity() {
             val viewModel: TareasViewModel = viewModel()
             val tareas by viewModel.tareas.collectAsState()
             var pantallaActual by rememberSaveable { mutableStateOf(Pantalla.LISTA) }
-            var tareaEditandoId by rememberSaveable { mutableStateOf<Int?>(null) } // null = crear
-
+            var tareaEditandoId by rememberSaveable { mutableStateOf<Int?>(null) }
             BackHandler(enabled = pantallaActual != Pantalla.LISTA) {
                 pantallaActual = Pantalla.LISTA
             }
@@ -46,11 +45,18 @@ class MainActivity : ComponentActivity() {
                                 tareaEditandoId = null
                                 pantallaActual = Pantalla.FORMULARIO
                             },
+                            onCompletadaChange = { viewModel.cambiarCompletada(it) },
+                            onEditar = {
+                                tareaEditandoId = it.id
+                                pantallaActual = Pantalla.FORMULARIO
+                            },
+                            onEliminar = { viewModel.eliminarTarea(it) },
                             modifier = Modifier.padding(innerPadding)
                         )
                     } else if (pantallaActual == Pantalla.FORMULARIO) {
+                        val tareaAEditar = tareas.find { it.id == tareaEditandoId }
                         FormularioTareaScreen(
-                            tareaInicial = tareas.find { it.id == tareaEditandoId },
+                            tareaInicial = tareaAEditar,
                             onGuardar = {
                                 if (tareaEditandoId == null) {
                                     viewModel.agregarTarea(it)
