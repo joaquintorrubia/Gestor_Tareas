@@ -10,13 +10,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.joaquin.gestor_tareas_pmm.R
 import com.joaquin.gestor_tareas_pmm.model.Prioridad
 import com.joaquin.gestor_tareas_pmm.model.Tarea
 import com.joaquin.gestor_tareas_pmm.ui.theme.Gestor_Tareas_PMMTheme
@@ -32,49 +36,43 @@ fun TarjetaTarea(tarea: Tarea, modifier: Modifier = Modifier) {
     }
 }
 
-
 @Composable
-fun ListaTareasScreen(tareas: List<Tarea>, modifier: Modifier = Modifier) {
-    if (tareas.isEmpty()) {
-        Box(
-            modifier = modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
+fun ListaTareasScreen(
+    tareas: List<Tarea>,
+    onAnadirClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Box(modifier = modifier.fillMaxSize()) {
+
+        if (tareas.isEmpty()) {
             Text(
                 text = "No hay tareas. ¡Añade la primera!",
-                style = MaterialTheme.typography.bodyLarge
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.align(Alignment.Center)
             )
-        }
-    } else {
-        LazyColumn(
-            modifier = modifier.fillMaxSize(),
-            contentPadding = PaddingValues(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            items(tareas, key = { it.id }) { tarea ->
-                TarjetaTarea(tarea = tarea)
+        } else {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(tareas, key = { it.id }) {
+                    TarjetaTarea(tarea = it)
+                }
             }
         }
-    }
-}
 
-@Preview(showBackground = true)
-@Composable
-fun TarjetaTareaPendientePreview() {
-    Gestor_Tareas_PMMTheme {
-        TarjetaTarea(
-            tarea = Tarea(id = 1, titulo = "Estudiar para el examen", prioridad = Prioridad.ALTA)
-        )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun TarjetaTareaCompletadaPreview() {
-    Gestor_Tareas_PMMTheme {
-        TarjetaTarea(
-            tarea = Tarea(id = 2, titulo = "Entregar la memoria", prioridad = Prioridad.BAJA, completada = true)
-        )
+        FloatingActionButton(
+            onClick = onAnadirClick,
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(16.dp)
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.ic_anadir),
+                contentDescription = "Añadir tarea"
+            )
+        }
     }
 }
 
@@ -87,7 +85,8 @@ fun ListaTareasConDatosPreview() {
                 Tarea(id = 1, titulo = "Estudiar para el examen", prioridad = Prioridad.ALTA),
                 Tarea(id = 2, titulo = "Preparar la reunión", prioridad = Prioridad.MEDIA),
                 Tarea(id = 3, titulo = "Entregar la memoria", prioridad = Prioridad.BAJA, completada = true)
-            )
+            ),
+            onAnadirClick = {}
         )
     }
 }
@@ -96,6 +95,6 @@ fun ListaTareasConDatosPreview() {
 @Composable
 fun ListaTareasVaciaPreview() {
     Gestor_Tareas_PMMTheme {
-        ListaTareasScreen(tareas = emptyList())
+        ListaTareasScreen(tareas = emptyList(), onAnadirClick = {})
     }
 }

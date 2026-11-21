@@ -2,16 +2,23 @@ package com.joaquin.gestor_tareas_pmm
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.joaquin.gestor_tareas_pmm.ui.Pantalla
 import com.joaquin.gestor_tareas_pmm.ui.TareasViewModel
+import com.joaquin.gestor_tareas_pmm.ui.screens.FormularioTareaScreen
 import com.joaquin.gestor_tareas_pmm.ui.screens.ListaTareasScreen
 import com.joaquin.gestor_tareas_pmm.ui.theme.Gestor_Tareas_PMMTheme
 
@@ -22,13 +29,45 @@ class MainActivity : ComponentActivity() {
         setContent {
             val viewModel: TareasViewModel = viewModel()
             val tareas by viewModel.tareas.collectAsState()
+            var pantallaActual by rememberSaveable { mutableStateOf(Pantalla.LISTA) }
+            var tareaEditandoId by rememberSaveable { mutableStateOf<Int?>(null) } // null = crear
+
+            BackHandler(enabled = pantallaActual != Pantalla.LISTA) {
+                pantallaActual = Pantalla.LISTA
+            }
 
             Gestor_Tareas_PMMTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    ListaTareasScreen(
-                        tareas = tareas,
-                        modifier = Modifier.padding(innerPadding)
-                    )
+
+                    if (pantallaActual == Pantalla.LISTA) {
+                        ListaTareasScreen(
+                            tareas = tareas,
+                            onAnadirClick = {
+                                tareaEditandoId = null
+                                pantallaActual = Pantalla.FORMULARIO
+                            },
+                            modifier = Modifier.padding(innerPadding)
+                        )
+                    } else if (pantallaActual == Pantalla.FORMULARIO) {
+                        FormularioTareaScreen(
+                            tareaInicial = tareas.find { it.id == tareaEditandoId },
+                            onGuardar = {
+                                if (tareaEditandoId == null) {
+                                    viewModel.agregarTarea(it)
+                                } else {
+                                    viewModel.actualizarTarea(it)
+                                }
+                                pantallaActual = Pantalla.LISTA
+                            },
+                            onCancelar = { pantallaActual = Pantalla.LISTA },
+                            modifier = Modifier.padding(innerPadding)
+                        )
+                    } else {
+                        Text(
+                            text = "Próximamente: tareas de ejemplo",
+                            modifier = Modifier.padding(innerPadding)
+                        )
+                    }
                 }
             }
         }

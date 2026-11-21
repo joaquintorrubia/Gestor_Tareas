@@ -9,6 +9,8 @@ import kotlinx.coroutines.flow.asStateFlow
 
 class TareasViewModel : ViewModel() {
 
+    private var siguienteId = 4
+
     private val _tareas = MutableStateFlow(
         listOf(
             Tarea(
@@ -33,4 +35,26 @@ class TareasViewModel : ViewModel() {
         )
     )
     val tareas: StateFlow<List<Tarea>> = _tareas.asStateFlow()
+
+    fun agregarTarea(tarea: Tarea) {
+        val nueva = tarea.copy(id = siguienteId)
+        siguienteId++
+        _tareas.value = _tareas.value + nueva
+    }
+
+    fun actualizarTarea(tarea: Tarea) {
+        _tareas.value = _tareas.value.map {
+            if (it.id == tarea.id) tarea else it
+        }
+    }
+
+    fun cambiarCompletada(tarea: Tarea) {
+        _tareas.value = _tareas.value.map {
+            if (it.id == tarea.id) it.copy(completada = !it.completada) else it
+        }
+    }
+
+    fun eliminarTarea(tarea: Tarea) {
+        _tareas.value = _tareas.value.filter { it.id != tarea.id }
+    }
 }
