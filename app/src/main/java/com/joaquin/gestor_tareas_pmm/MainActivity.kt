@@ -29,8 +29,11 @@ class MainActivity : ComponentActivity() {
         setContent {
             val viewModel: TareasViewModel = viewModel()
             val tareas by viewModel.tareas.collectAsState()
+            val soloPendientes by viewModel.soloPendientes.collectAsState()
+            val tareasVisibles = if (soloPendientes) tareas.filter { !it.completada } else tareas
             var pantallaActual by rememberSaveable { mutableStateOf(Pantalla.LISTA) }
             var tareaEditandoId by rememberSaveable { mutableStateOf<Int?>(null) }
+
             BackHandler(enabled = pantallaActual != Pantalla.LISTA) {
                 pantallaActual = Pantalla.LISTA
             }
@@ -40,7 +43,9 @@ class MainActivity : ComponentActivity() {
 
                     if (pantallaActual == Pantalla.LISTA) {
                         ListaTareasScreen(
-                            tareas = tareas,
+                            tareas = tareasVisibles,
+                            soloPendientes = soloPendientes,
+                            onSoloPendientesChange = { viewModel.cambiarSoloPendientes(it) },
                             onAnadirClick = {
                                 tareaEditandoId = null
                                 pantallaActual = Pantalla.FORMULARIO

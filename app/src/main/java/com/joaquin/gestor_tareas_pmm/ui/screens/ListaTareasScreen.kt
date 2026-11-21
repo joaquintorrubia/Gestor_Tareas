@@ -17,6 +17,7 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -33,7 +34,6 @@ import com.joaquin.gestor_tareas_pmm.R
 import com.joaquin.gestor_tareas_pmm.model.Prioridad
 import com.joaquin.gestor_tareas_pmm.model.Tarea
 import com.joaquin.gestor_tareas_pmm.ui.theme.Gestor_Tareas_PMMTheme
-
 
 @Composable
 fun TarjetaTarea(
@@ -73,10 +73,11 @@ fun TarjetaTarea(
     }
 }
 
-
 @Composable
 fun ListaTareasScreen(
     tareas: List<Tarea>,
+    soloPendientes: Boolean,
+    onSoloPendientesChange: (Boolean) -> Unit,
     onAnadirClick: () -> Unit,
     onCompletadaChange: (Tarea) -> Unit,
     onEditar: (Tarea) -> Unit,
@@ -87,26 +88,40 @@ fun ListaTareasScreen(
 
     Box(modifier = modifier.fillMaxSize()) {
 
-        if (tareas.isEmpty()) {
-            Text(
-                text = "No hay tareas. ¡Añade la primera!",
-                style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.align(Alignment.Center)
-            )
-        } else {
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+        Column(modifier = Modifier.fillMaxSize()) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                items(tareas, key = { it.id }) {
-                    val tarea = it
-                    TarjetaTarea(
-                        tarea = tarea,
-                        onCompletadaChange = { onCompletadaChange(tarea) },
-                        onEditar = { onEditar(tarea) },
-                        onEliminar = { tareaAEliminar = tarea }
+                Text(text = "Mostrar solo pendientes", modifier = Modifier.weight(1f))
+                Switch(checked = soloPendientes, onCheckedChange = onSoloPendientesChange)
+            }
+
+            Box(modifier = Modifier.weight(1f)) {
+                if (tareas.isEmpty()) {
+                    Text(
+                        text = if (soloPendientes) "No hay tareas pendientes" else "No hay tareas. ¡Añade la primera!",
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier.align(Alignment.Center)
                     )
+                } else {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        contentPadding = PaddingValues(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        items(tareas, key = { it.id }) {
+                            val tarea = it
+                            TarjetaTarea(
+                                tarea = tarea,
+                                onCompletadaChange = { onCompletadaChange(tarea) },
+                                onEditar = { onEditar(tarea) },
+                                onEliminar = { tareaAEliminar = tarea }
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -122,6 +137,7 @@ fun ListaTareasScreen(
                 contentDescription = "Añadir tarea"
             )
         }
+
         val tarea = tareaAEliminar
         if (tarea != null) {
             AlertDialog(
@@ -165,6 +181,8 @@ fun ListaTareasConDatosPreview() {
                 Tarea(id = 2, titulo = "Preparar la reunión", prioridad = Prioridad.MEDIA),
                 Tarea(id = 3, titulo = "Entregar la memoria", prioridad = Prioridad.BAJA, completada = true)
             ),
+            soloPendientes = false,
+            onSoloPendientesChange = {},
             onAnadirClick = {},
             onCompletadaChange = {},
             onEditar = {},
@@ -179,6 +197,24 @@ fun ListaTareasVaciaPreview() {
     Gestor_Tareas_PMMTheme {
         ListaTareasScreen(
             tareas = emptyList(),
+            soloPendientes = false,
+            onSoloPendientesChange = {},
+            onAnadirClick = {},
+            onCompletadaChange = {},
+            onEditar = {},
+            onEliminar = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ListaTareasFiltroSinPendientesPreview() {
+    Gestor_Tareas_PMMTheme {
+        ListaTareasScreen(
+            tareas = emptyList(),
+            soloPendientes = true,
+            onSoloPendientesChange = {},
             onAnadirClick = {},
             onCompletadaChange = {},
             onEditar = {},
