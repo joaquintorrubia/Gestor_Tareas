@@ -8,8 +8,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
@@ -80,6 +81,7 @@ fun TarjetaTarea(
     }
 }
 
+// Pantalla de la lista: acceso a ejemplos, filtro, tareas (o mensaje), botón añadir y diálogo de borrado
 @Composable
 fun ListaTareasScreen(
     tareas: List<Tarea>,
@@ -93,6 +95,7 @@ fun ListaTareasScreen(
     onEjemplosClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    // Tarea que el usuario quiere borrar (null = no hay diálogo abierto)
     var tareaAEliminar by remember { mutableStateOf<Tarea?>(null) }
 
     Box(modifier = modifier.fillMaxSize()) {
@@ -132,10 +135,12 @@ fun ListaTareasScreen(
                         modifier = Modifier.align(Alignment.Center)
                     )
                 } else {
-                    LazyColumn(
+                    LazyVerticalGrid(
+                        columns = GridCells.Adaptive(minSize = 300.dp),
                         modifier = Modifier.fillMaxSize(),
-                        contentPadding = PaddingValues(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                        contentPadding = PaddingValues(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 88.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         items(tareas, key = { it.id }) {
                             val tarea = it
@@ -207,6 +212,29 @@ fun ListaTareasConDatosPreview() {
                 Tarea(id = 1, titulo = "Estudiar para el examen", prioridad = Prioridad.ALTA),
                 Tarea(id = 2, titulo = "Preparar la reunión", prioridad = Prioridad.MEDIA),
                 Tarea(id = 3, titulo = "Entregar la memoria", prioridad = Prioridad.BAJA, completada = true)
+            ),
+            soloPendientes = false,
+            onSoloPendientesChange = {},
+            onAnadirClick = {},
+            onCompletadaChange = {},
+            onCompartir = {},
+            onEditar = {},
+            onEliminar = {},
+            onEjemplosClick = {}
+        )
+    }
+}
+
+@Preview(showBackground = true, widthDp = 900, heightDp = 600)
+@Composable
+fun ListaTareasTabletPreview() {
+    Gestor_Tareas_PMMTheme {
+        ListaTareasScreen(
+            tareas = listOf(
+                Tarea(id = 1, titulo = "Estudiar para el examen", prioridad = Prioridad.ALTA),
+                Tarea(id = 2, titulo = "Preparar la reunión", prioridad = Prioridad.MEDIA),
+                Tarea(id = 3, titulo = "Entregar la memoria", prioridad = Prioridad.BAJA, completada = true),
+                Tarea(id = 4, titulo = "Revisar el README", prioridad = Prioridad.MEDIA)
             ),
             soloPendientes = false,
             onSoloPendientesChange = {},
