@@ -82,8 +82,10 @@ fun ListaTareasScreen(
     onCompletadaChange: (Tarea) -> Unit,
     onEditar: (Tarea) -> Unit,
     onEliminar: (Tarea) -> Unit,
+    onEjemplosClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+
     var tareaAEliminar by remember { mutableStateOf<Tarea?>(null) }
 
     Box(modifier = modifier.fillMaxSize()) {
@@ -92,7 +94,23 @@ fun ListaTareasScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                    .padding(start = 16.dp, end = 8.dp, top = 8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Mis tareas",
+                    style = MaterialTheme.typography.headlineSmall,
+                    modifier = Modifier.weight(1f)
+                )
+                TextButton(onClick = onEjemplosClick) {
+                    Text("Tareas de ejemplo")
+                }
+            }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 4.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(text = "Mostrar solo pendientes", modifier = Modifier.weight(1f))
@@ -186,7 +204,8 @@ fun ListaTareasConDatosPreview() {
             onAnadirClick = {},
             onCompletadaChange = {},
             onEditar = {},
-            onEliminar = {}
+            onEliminar = {},
+            onEjemplosClick = {}
         )
     }
 }
@@ -202,7 +221,8 @@ fun ListaTareasVaciaPreview() {
             onAnadirClick = {},
             onCompletadaChange = {},
             onEditar = {},
-            onEliminar = {}
+            onEliminar = {},
+            onEjemplosClick = {}
         )
     }
 }
@@ -218,7 +238,8 @@ fun ListaTareasFiltroSinPendientesPreview() {
             onAnadirClick = {},
             onCompletadaChange = {},
             onEditar = {},
-            onEliminar = {}
+            onEliminar = {},
+            onEjemplosClick = {}
         )
     }
 }
