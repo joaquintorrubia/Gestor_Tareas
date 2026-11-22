@@ -112,33 +112,35 @@ Configuración: Android Gradle Plugin 9.4.1 (Kotlin integrado), Kotlin 2.2.10, `
 
 ## 8. Pruebas realizadas
 
-Marca ✅ si el resultado coincide con el esperado o describe lo que ha pasado.
+Todas las pruebas se han realizado en los dos emuladores y han dado el resultado esperado (✅).
 
 | Nº | Prueba | Resultado esperado | Móvil | Tablet |
 |---|---|---|---|---|
-| 1 | Crear una tarea válida | Se guarda y aparece en la lista | | |
-| 2 | Guardar con título vacío | Error junto al campo; no se crea la tarea | | |
-| 3 | Editar una tarea | Los cambios se muestran correctamente | | |
-| 4 | Marcar como completada | Su estado cambia y queda guardado | | |
-| 5 | Cancelar una eliminación | La tarea no desaparece | | |
-| 6 | Eliminar confirmando | La tarea desaparece de la base de datos | | |
-| 7 | Cerrar y volver a abrir la app | Se recuperan las tareas guardadas | | |
-| 8 | Activar el filtro y reiniciar | Se conserva la preferencia | | |
-| 9 | Consultar la API con Internet | Se muestran las tareas recibidas | | |
-| 10 | Consultar la API sin conexión (modo avión) | Mensaje de error y botón «Reintentar» | | |
-| 11 | Compartir una tarea | Se abre el selector de aplicaciones | | |
-| 12 | Girar el dispositivo (lista, formulario, edición, ejemplos) | La app sigue funcionando y conserva los datos | | |
+| 1 | Crear una tarea válida | Se guarda y aparece en la lista | ✅ | ✅ |
+| 2 | Guardar con título vacío | Error junto al campo; no se crea la tarea | ✅ | ✅ |
+| 3 | Editar una tarea | Los cambios se muestran correctamente | ✅ | ✅ |
+| 4 | Marcar como completada | Su estado cambia y queda guardado | ✅ | ✅ |
+| 5 | Cancelar una eliminación | La tarea no desaparece | ✅ | ✅ |
+| 6 | Eliminar confirmando | La tarea desaparece de la base de datos | ✅ | ✅ |
+| 7 | Cerrar y volver a abrir la app | Se recuperan las tareas guardadas | ✅ | ✅ |
+| 8 | Activar el filtro y reiniciar | Se conserva la preferencia | ✅ | ✅ |
+| 9 | Consultar la API con Internet | Se muestran las tareas recibidas | ✅ | ✅ |
+| 10 | Consultar la API sin conexión (modo avión) | Mensaje de error y botón «Reintentar» | ✅ | ✅ |
+| 11 | Compartir una tarea | Se abre el selector de aplicaciones | ✅ | ✅ |
+| 12 | Girar el dispositivo (lista, formulario, edición, ejemplos) | La app sigue funcionando y conserva los datos | ✅ * | ✅ * |
+
+\* El diálogo de eliminar se cierra al girar (ver «Incidencias conocidas»); la tarea no se borra y la app sigue funcionando.
 
 Pruebas adicionales:
 
 | Prueba | Resultado esperado | Resultado |
 |---|---|---|
-| Título de 2 caracteres | Error «al menos 3 caracteres» | |
-| Pulsar Guardar muchas veces seguidas | La tarea se crea una sola vez | |
-| Pulsar «Cargar» mientras carga | El botón está desactivado | |
-| Compartir una tarea sin descripción | No aparece la línea «Descripción:» | |
-| Botón «atrás» en el formulario o en ejemplos | Vuelve a la lista sin cerrar la app | |
-| Database Inspector | La tabla `tareas` contiene las filas reales | |
+| Título de 2 caracteres | Error «al menos 3 caracteres» | ✅ |
+| Pulsar Guardar muchas veces seguidas | La tarea se crea una sola vez | ✅ |
+| Pulsar «Cargar» mientras carga | El botón está desactivado | ✅ |
+| Compartir una tarea sin descripción | No aparece la línea «Descripción:» | ✅ |
+| Botón «atrás» en el formulario o en ejemplos | Vuelve a la lista sin cerrar la app | ✅ |
+| Database Inspector | La tabla `tareas` contiene las filas reales | ✅ |
 
 ## 9. Capturas de pantalla
 
