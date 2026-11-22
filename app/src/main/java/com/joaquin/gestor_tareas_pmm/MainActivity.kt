@@ -14,10 +14,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.joaquin.gestor_tareas_pmm.ui.EjemplosViewModel
 import com.joaquin.gestor_tareas_pmm.ui.Pantalla
 import com.joaquin.gestor_tareas_pmm.ui.TareasViewModel
+import com.joaquin.gestor_tareas_pmm.ui.compartirTarea
 import com.joaquin.gestor_tareas_pmm.ui.screens.EjemplosScreen
 import com.joaquin.gestor_tareas_pmm.ui.screens.FormularioTareaScreen
 import com.joaquin.gestor_tareas_pmm.ui.screens.ListaTareasScreen
@@ -28,6 +30,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            val context = LocalContext.current
             val viewModel: TareasViewModel = viewModel()
             val tareas by viewModel.tareas.collectAsState()
             val soloPendientes by viewModel.soloPendientes.collectAsState()
@@ -54,6 +57,7 @@ class MainActivity : ComponentActivity() {
                                 pantallaActual = Pantalla.FORMULARIO
                             },
                             onCompletadaChange = { viewModel.cambiarCompletada(it) },
+                            onCompartir = { compartirTarea(context, it) },
                             onEditar = {
                                 tareaEditandoId = it.id
                                 pantallaActual = Pantalla.FORMULARIO

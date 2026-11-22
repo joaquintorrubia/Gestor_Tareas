@@ -39,6 +39,7 @@ import com.joaquin.gestor_tareas_pmm.ui.theme.Gestor_Tareas_PMMTheme
 fun TarjetaTarea(
     tarea: Tarea,
     onCompletadaChange: () -> Unit,
+    onCompartir: () -> Unit,
     onEditar: () -> Unit,
     onEliminar: () -> Unit,
     modifier: Modifier = Modifier
@@ -56,6 +57,12 @@ fun TarjetaTarea(
                 Text(text = tarea.titulo, style = MaterialTheme.typography.titleMedium)
                 Text(text = "Prioridad: ${tarea.prioridad.etiqueta}")
                 Text(text = if (tarea.completada) "Completada" else "Pendiente")
+            }
+            IconButton(onClick = onCompartir) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_compartir),
+                    contentDescription = "Compartir tarea"
+                )
             }
             IconButton(onClick = onEditar) {
                 Icon(
@@ -80,12 +87,12 @@ fun ListaTareasScreen(
     onSoloPendientesChange: (Boolean) -> Unit,
     onAnadirClick: () -> Unit,
     onCompletadaChange: (Tarea) -> Unit,
+    onCompartir: (Tarea) -> Unit,
     onEditar: (Tarea) -> Unit,
     onEliminar: (Tarea) -> Unit,
     onEjemplosClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-
     var tareaAEliminar by remember { mutableStateOf<Tarea?>(null) }
 
     Box(modifier = modifier.fillMaxSize()) {
@@ -135,6 +142,7 @@ fun ListaTareasScreen(
                             TarjetaTarea(
                                 tarea = tarea,
                                 onCompletadaChange = { onCompletadaChange(tarea) },
+                                onCompartir = { onCompartir(tarea) },
                                 onEditar = { onEditar(tarea) },
                                 onEliminar = { tareaAEliminar = tarea }
                             )
@@ -183,6 +191,7 @@ fun TarjetaTareaPreview() {
         TarjetaTarea(
             tarea = Tarea(id = 1, titulo = "Estudiar para el examen", prioridad = Prioridad.ALTA),
             onCompletadaChange = {},
+            onCompartir = {},
             onEditar = {},
             onEliminar = {}
         )
@@ -203,6 +212,7 @@ fun ListaTareasConDatosPreview() {
             onSoloPendientesChange = {},
             onAnadirClick = {},
             onCompletadaChange = {},
+            onCompartir = {},
             onEditar = {},
             onEliminar = {},
             onEjemplosClick = {}
@@ -220,6 +230,7 @@ fun ListaTareasVaciaPreview() {
             onSoloPendientesChange = {},
             onAnadirClick = {},
             onCompletadaChange = {},
+            onCompartir = {},
             onEditar = {},
             onEliminar = {},
             onEjemplosClick = {}
@@ -237,6 +248,7 @@ fun ListaTareasFiltroSinPendientesPreview() {
             onSoloPendientesChange = {},
             onAnadirClick = {},
             onCompletadaChange = {},
+            onCompartir = {},
             onEditar = {},
             onEliminar = {},
             onEjemplosClick = {}
